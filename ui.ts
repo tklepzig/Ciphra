@@ -25,20 +25,44 @@ const GAME_KEY = "mm.game";
 // ---------------------------------------------------------------------------
 // Persistence
 // ---------------------------------------------------------------------------
+// localStorage can throw (Safari private mode, storage disabled). Degrade to an
+// unsaved-but-playable session instead of failing to boot.
+function safeGet(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+function safeSet(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* storage unavailable — play on without persistence */
+  }
+}
+function safeRemove(key: string): void {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    /* storage unavailable */
+  }
+}
+
 function loadConfig(): GameConfig {
-  return deserializeConfig(localStorage.getItem(CONFIG_KEY)) ?? { ...DEFAULT_CONFIG };
+  return deserializeConfig(safeGet(CONFIG_KEY)) ?? { ...DEFAULT_CONFIG };
 }
 function saveConfig(config: GameConfig): void {
-  localStorage.setItem(CONFIG_KEY, serializeConfig(config));
+  safeSet(CONFIG_KEY, serializeConfig(config));
 }
 function loadGame(): GameState | null {
-  return deserializeGame(localStorage.getItem(GAME_KEY));
+  return deserializeGame(safeGet(GAME_KEY));
 }
 function saveGame(state: GameState): void {
-  localStorage.setItem(GAME_KEY, serializeGame(state));
+  safeSet(GAME_KEY, serializeGame(state));
 }
 function clearGame(): void {
-  localStorage.removeItem(GAME_KEY);
+  safeRemove(GAME_KEY);
 }
 
 // ---------------------------------------------------------------------------
@@ -382,8 +406,12 @@ byId("btn-home").addEventListener("click", goHome);
 
 // Settings → back returns to the live game if it survived, else home.
 byId("settings-back").addEventListener("click", () => {
+  // Return to a still-running game WITHOUT resetting the active row — peeking at
+  // settings and backing out must not discard placed pegs. (A real config change
+  // nulls `game` via onConfigChanged, so that path still starts a fresh game.)
   if (game && game.status === "playing") {
-    resumeGame();
+    renderGame();
+    showScreen("game");
   } else {
     goHome();
   }
