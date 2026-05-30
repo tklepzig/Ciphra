@@ -73,6 +73,8 @@ let config: GameConfig = loadConfig();
 let game: GameState | null = loadGame();
 // The current, not-yet-submitted row. Length follows the active game's config.
 let active: (number | null)[] = [];
+// Which slot the next palette click will fill.
+let selectedSlot: number = 0;
 
 const byId = <T extends HTMLElement>(id: string): T =>
   document.getElementById(id) as T;
@@ -112,9 +114,14 @@ function pegEl(
   return element;
 }
 
-function slotEl(size: "m" | "l", isActive: boolean): HTMLElement {
-  const element = document.createElement("span");
+function slotEl(size: "m" | "l", isActive: boolean, onClick?: () => void): HTMLElement {
+  const tag = onClick ? "button" : "span";
+  const element = document.createElement(tag);
   element.className = `slot ${size}${isActive ? " active" : ""}`;
+  if (onClick) {
+    (element as HTMLButtonElement).type = "button";
+    element.addEventListener("click", onClick);
+  }
   return element;
 }
 
@@ -174,7 +181,7 @@ function renderGame(): void {
       for (let slot = 0; slot < codeLength; slot++) {
         const placed = active[slot];
         if (placed === null) {
-          pegs.append(slotEl("m", slot === active.indexOf(null)));
+          pegs.append(slotEl("m", slot === selectedSlot, () => selectSlot(slot)));
         } else {
           pegs.append(pegEl(placed, "m", () => clearSlot(slot)));
         }
@@ -215,17 +222,27 @@ function renderGame(): void {
 // ---------------------------------------------------------------------------
 // Game interaction
 // ---------------------------------------------------------------------------
+function selectSlot(index: number): void {
+  selectedSlot = index;
+  renderGame();
+}
+
 function placeColour(colour: number): void {
   if (!game || game.status !== "playing") return;
   if (!game.config.allowRepeats && active.includes(colour)) return;
+  // If the selected slot is already filled, fall back to the first empty slot.
+  const target = active[selectedSlot] === null ? selectedSlot : active.indexOf(null);
+  if (target === -1) return; // row full
+  active[target] = colour;
+  // Advance selection to the next empty slot (if any).
   const next = active.indexOf(null);
-  if (next === -1) return; // row full
-  active[next] = colour;
+  if (next !== -1) selectedSlot = next;
   renderGame();
 }
 
 function clearSlot(index: number): void {
   active[index] = null;
+  selectedSlot = index;
   renderGame();
 }
 
@@ -233,6 +250,7 @@ function undoLast(): void {
   for (let index = active.length - 1; index >= 0; index--) {
     if (active[index] !== null) {
       active[index] = null;
+      selectedSlot = index;
       break;
     }
   }
@@ -243,6 +261,7 @@ function check(): void {
   if (!game || game.status !== "playing" || !isRowFull()) return;
   game = submitGuess(game, active as number[]);
   active = emptyRow(game.config.codeLength);
+  selectedSlot = 0;
 
   if (game.status === "playing") {
     saveGame(game);
@@ -258,6 +277,7 @@ function check(): void {
 function startGame(withConfig: GameConfig): void {
   game = createGame(withConfig);
   active = emptyRow(game.config.codeLength);
+  selectedSlot = 0;
   saveGame(game);
   renderGame();
   showScreen("game");
@@ -266,6 +286,7 @@ function startGame(withConfig: GameConfig): void {
 function resumeGame(): void {
   if (!game) return;
   active = emptyRow(game.config.codeLength);
+  selectedSlot = 0;
   renderGame();
   showScreen("game");
 }
