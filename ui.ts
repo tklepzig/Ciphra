@@ -183,6 +183,9 @@ function renderGame(): void {
   // Controls
   (byId("btn-check") as HTMLButtonElement).disabled = !isRowFull();
   (byId("btn-undo") as HTMLButtonElement).disabled = active.every((p) => p === null);
+
+  // Keep the active row visible as the board scrolls internally.
+  board.querySelector(".row.current")?.scrollIntoView({ block: "nearest" });
 }
 
 // ---------------------------------------------------------------------------

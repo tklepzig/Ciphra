@@ -39,6 +39,24 @@
   }
 }
 
+// Game screen is a fixed-height shell: only the board scrolls, so the palette
+// and controls stay pinned at the bottom — colours are always one tap away.
+#screen-game {
+  // Fixed height (not min-height) so the board track is forced to scroll
+  // internally instead of growing the page and pushing the palette off-screen.
+  height: calc(100dvh - 2 * var(--padding));
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: var(--spacing);
+
+  .board {
+    overflow-y: auto;
+    min-height: 0;
+    align-content: start;
+    padding-right: var(--spacing-xs);
+    @extend %scrollbar;
+  }
+}
+
 // In-app commands read better centred than Ada's default bottom-right label.
 .command {
   align-items: center;
