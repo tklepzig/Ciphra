@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Full-bleed background; pegs kept inside the central safe zone for masking. -->
+  <rect x="0" y="0" width="512" height="512" fill="#13230d" />
+  <g>
+    <circle cx="202" cy="202" r="56" fill="#0072b2" />
+    <circle cx="310" cy="202" r="56" fill="#e69f00" />
+    <circle cx="202" cy="310" r="56" fill="#009e73" />
+    <circle cx="310" cy="310" r="56" fill="#d55e00" />
+  </g>
+</svg>

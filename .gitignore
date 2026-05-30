@@ -1,0 +1,11 @@
+node_modules/
+game.js
+storage.js
+ui.js
+style.min.css
+style.min.css.map
+
+# Design scratch — has machine-local absolute paths, not for the public repo.
+mockups/
+
+.brainstorm/

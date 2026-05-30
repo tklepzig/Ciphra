@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="theme-color" content="#23400f" />
+    <meta
+      name="viewport"
+      content="user-scalable=yes, initial-scale=1.0, maximum-scale=10.0, width=device-width"
+    />
+    <!-- PLACEHOLDER NAME — "Farbcode" is a working title; rename here, in the
+         wordmark below, and in manifest.webmanifest once a name is chosen. -->
+    <title>Farbcode</title>
+    <link href="style.min.css" rel="stylesheet" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("sw.js");
+        });
+      }
+    </script>
+    <script type="module" src="ui.js"></script>
+  </head>
+  <body>
+    <main class="app">
+      <!-- ============================ HOME ============================ -->
+      <section class="screen" id="screen-home">
+        <div class="appbar">
+          <button class="iconbtn" id="home-help" type="button" aria-label="Spielanleitung">?</button>
+          <div class="wordmark">
+            <span class="logo">
+              <i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c6"></i>
+            </span>
+            <span class="name">FARBCODE</span>
+            <span class="placeholder-chip">Name offen</span>
+          </div>
+          <button class="iconbtn" id="home-settings" type="button" aria-label="Einstellungen">⚙</button>
+        </div>
+
+        <section class="panel">
+          <header></header>
+          <article style="display: grid; justify-items: center; gap: var(--spacing-lg); padding-block: var(--padding-lg)">
+            <div class="hero-pegs">
+              <span class="peg l c5"></span><span class="peg l c1"></span><span class="peg l c3"></span><span class="peg l c6"></span>
+            </div>
+            <p class="tagline">Knacke den geheimen Farbcode.</p>
+          </article>
+          <footer></footer>
+        </section>
+
+        <div class="cta-stack">
+          <button class="command cta primary" id="btn-new" type="button">Neues Spiel</button>
+          <button class="command cta" id="btn-continue" type="button" hidden>Fortsetzen</button>
+          <button class="command cta outline" id="btn-howto" type="button">Spielanleitung</button>
+        </div>
+      </section>
+
+      <!-- ========================== SETTINGS ========================== -->
+      <section class="screen" id="screen-settings" hidden>
+        <div class="appbar">
+          <button class="iconbtn" id="settings-back" type="button" aria-label="Zurück">←</button>
+          <div class="title">Einstellungen</div>
+          <span class="iconbtn ghost" aria-hidden="true"></span>
+        </div>
+
+        <section class="panel">
+          <header>Spielfeld</header>
+          <article>
+            <div class="set-row">
+              <div>
+                <div class="lab">Farben</div>
+                <div class="desc">Okabe–Ito, farbblind-sicher</div>
+                <div class="mini-palette" id="colours-preview"></div>
+              </div>
+              <div class="stepper" data-setting="colours">
+                <button class="command step-btn" type="button" data-step="-1" aria-label="weniger Farben">−</button>
+                <span class="val" id="val-colours">6</span>
+                <button class="command step-btn" type="button" data-step="1" aria-label="mehr Farben">+</button>
+              </div>
+            </div>
+            <div class="set-row">
+              <div><div class="lab">Code-Länge</div><div class="desc">Stifte im Code</div></div>
+              <div class="stepper" data-setting="codeLength">
+                <button class="command step-btn" type="button" data-step="-1" aria-label="kürzer">−</button>
+                <span class="val" id="val-codeLength">4</span>
+                <button class="command step-btn" type="button" data-step="1" aria-label="länger">+</button>
+              </div>
+            </div>
+            <div class="set-row">
+              <div><div class="lab">Versuche</div><div class="desc">Zeilen bis zur Niederlage</div></div>
+              <div class="stepper" data-setting="maxGuesses">
+                <button class="command step-btn" type="button" data-step="-1" aria-label="weniger Versuche">−</button>
+                <span class="val" id="val-maxGuesses">10</span>
+                <button class="command step-btn" type="button" data-step="1" aria-label="mehr Versuche">+</button>
+              </div>
+            </div>
+          </article>
+          <footer></footer>
+        </section>
+
+        <section class="panel">
+          <header>Regeln</header>
+          <article>
+            <div class="set-row">
+              <div><div class="lab">Wiederholungen erlauben</div><div class="desc">Gleiche Farbe mehrfach</div></div>
+              <button class="toggle" id="toggle-repeats" type="button" role="switch" aria-checked="true" aria-label="Wiederholungen erlauben"></button>
+            </div>
+          </article>
+          <footer></footer>
+        </section>
+        <p class="reset-note">Änderungen am Spielfeld starten ein neues Spiel.</p>
+      </section>
+
+      <!-- ============================ GAME ============================ -->
+      <section class="screen" id="screen-game" hidden>
+        <div class="appbar">
+          <button class="iconbtn" id="game-back" type="button" aria-label="Zurück">←</button>
+          <div class="title" id="game-title">Noch 10 Versuche</div>
+          <button class="iconbtn" id="game-settings" type="button" aria-label="Einstellungen">⚙</button>
+        </div>
+
+        <div class="board" id="board"></div>
+
+        <section class="panel">
+          <header></header>
+          <article style="display: grid; gap: var(--spacing)">
+            <div class="tray"><div class="pegs" id="palette"></div></div>
+            <div class="tray-actions">
+              <button class="command outline" id="btn-undo" type="button">Zurück</button>
+              <button class="command primary" id="btn-check" type="button" disabled>Prüfen</button>
+            </div>
+          </article>
+          <footer></footer>
+        </section>
+        <p class="annot">Farbe antippen zum Setzen · Feld antippen zum Leeren</p>
+      </section>
+
+      <!-- ============================ END ============================= -->
+      <section class="screen" id="screen-end" hidden>
+        <div class="appbar">
+          <button class="iconbtn" id="end-back" type="button" aria-label="Startseite">←</button>
+          <div class="title" id="end-bar">Ergebnis</div>
+          <button class="iconbtn" id="end-settings" type="button" aria-label="Einstellungen">⚙</button>
+        </div>
+
+        <div class="end-hero">
+          <div class="end-glyph" id="end-glyph"></div>
+          <div class="end-title" id="end-title"></div>
+          <div class="end-sub" id="end-sub"></div>
+        </div>
+
+        <section class="panel">
+          <header></header>
+          <article class="reveal">
+            <span class="cap">der geheime Code war</span>
+            <span class="pegs" id="reveal"></span>
+            <div class="stat-row" id="stats" hidden></div>
+          </article>
+          <footer></footer>
+        </section>
+
+        <div class="cta-stack">
+          <button class="command cta primary" id="btn-again" type="button">Nochmal spielen</button>
+          <button class="command cta outline" id="btn-home" type="button">Startseite</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- ======================= HOW TO PLAY ======================= -->
+    <dialog class="howto" id="howto">
+      <section class="panel">
+        <header>Spielanleitung</header>
+        <article style="display: grid; gap: var(--spacing-lg)">
+          <p class="note">Errate die geheime Farbreihe. Nach jedem Versuch bekommst du Hinweis-Stifte:</p>
+          <div class="legend">
+            <div class="li"><span class="fb" style="grid-template-columns: 10px"><i class="exact"></i></span><span><b>Gefüllt</b> — richtige Farbe, richtige Position</span></div>
+            <div class="li"><span class="fb" style="grid-template-columns: 10px"><i class="colour"></i></span><span><b>Umrandet</b> — richtige Farbe, falsche Position</span></div>
+          </div>
+          <p class="note">Weniger Stifte als die Code-Länge → einige Farben sind gar nicht im Code. Der Hinweis verrät nicht, <i>welcher</i> Stift — das ist das Rätsel.</p>
+          <button class="command primary" id="howto-close" type="button">Verstanden</button>
+        </article>
+        <footer></footer>
+      </section>
+    </dialog>
+  </body>
+</html>

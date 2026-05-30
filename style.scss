@@ -1,0 +1,496 @@
+// Ada (sci-fi framework), green theme — consumed exactly like Trica: theme
+// first, then base. Resolved from node_modules via the sass --load-path in the
+// build script, so the whole app ships as a single style.min.css (offline).
+@import "ada-ui/scss/ada.green";
+@import "ada-ui/scss/ada";
+
+// Self-hosted Open Sans (Ada's default family) so the PWA renders identically
+// offline. Refresh with scripts/update-fonts.sh.
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url("./assets/fonts/open-sans-latin.woff2") format("woff2");
+}
+
+// ===========================================================================
+// App shell — single column, centred on desktop, one screen visible at a time
+// ===========================================================================
+.app {
+  max-width: 30rem;
+  margin: 0 auto;
+}
+@media (min-width: 640px) {
+  body {
+    min-height: 100vh;
+    display: grid;
+    align-content: safe center;
+  }
+}
+
+.screen {
+  display: grid;
+  gap: var(--spacing-lg);
+  align-content: start;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+// In-app commands read better centred than Ada's default bottom-right label.
+.command {
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+.command.primary {
+  background-color: oklch(0.62 0.12 185);
+  color: #03181b;
+  font-weight: 700;
+
+  &:disabled {
+    background: oklch(var(--800));
+    color: oklch(var(--100) / 0.35);
+  }
+}
+
+// focus ring for the custom peg/slot buttons (commands handle their own)
+.peg:focus-visible,
+.slot:focus-visible {
+  outline: var(--border-width) solid oklch(var(--500));
+  outline-offset: 2px;
+}
+
+// ===========================================================================
+// App bar
+// ===========================================================================
+.appbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--spacing);
+}
+.appbar .title {
+  text-align: center;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.iconbtn {
+  width: 2.75rem;
+  height: 2.75rem;
+  background-color: var(--color800);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  display: grid;
+  place-items: center;
+  color: var(--color100);
+  font-size: var(--text-lg);
+  cursor: pointer;
+
+  &.ghost {
+    visibility: hidden;
+  }
+  &:focus-visible {
+    outline: var(--border-width) solid oklch(var(--500));
+  }
+}
+
+.wordmark {
+  display: grid;
+  justify-items: center;
+  gap: var(--spacing-xs);
+}
+.wordmark .logo {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 4px;
+}
+.wordmark .logo i {
+  width: 10px;
+  height: 10px;
+}
+.wordmark .name {
+  font-weight: 800;
+  font-size: var(--text-xl);
+  letter-spacing: 0.18em;
+}
+.placeholder-chip {
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(var(--100) / 0.45);
+  border: 1px solid oklch(var(--700));
+  padding: 1px 6px;
+}
+
+// stacked full-width CTAs
+.cta {
+  width: 100%;
+  min-height: 3.1rem;
+  font-size: var(--text-lg);
+}
+.cta-stack {
+  display: grid;
+  gap: var(--spacing);
+}
+
+// ===========================================================================
+// Pegs — colourful Okabe–Ito data on neutral chrome (flat, thin ring)
+// ===========================================================================
+.peg {
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -3px 7px rgba(0, 0, 0, 0.35);
+  padding: 0;
+}
+button.peg {
+  cursor: pointer;
+}
+.peg.s {
+  width: 26px;
+  height: 26px;
+}
+.peg.m {
+  width: 36px;
+  height: 36px;
+}
+.peg.l {
+  width: 44px;
+  height: 44px;
+}
+.peg[disabled] {
+  opacity: 0.28;
+  cursor: default;
+}
+
+.slot {
+  border-radius: 50%;
+  border: 2px dashed oklch(var(--700));
+  background: oklch(var(--950));
+  padding: 0;
+  cursor: pointer;
+}
+.slot.m {
+  width: 36px;
+  height: 36px;
+}
+.slot.l {
+  width: 44px;
+  height: 44px;
+}
+.slot.active {
+  border-style: solid;
+  border-color: oklch(var(--500));
+  box-shadow: 0 0 0 3px oklch(var(--500) / 0.18);
+}
+
+// the 10-colour palette (Okabe–Ito, colourblind-safe; first 6 are the default)
+.c1 { background: #e69f00; }
+.c2 { background: #56b4e9; }
+.c3 { background: #009e73; }
+.c4 { background: #f0e442; }
+.c5 { background: #0072b2; }
+.c6 { background: #d55e00; }
+.c7 { background: #cc79a7; }
+.c8 { background: #f5f5f5; }
+.c9 { background: #999999; }
+.c10 { background: #8a5a00; }
+
+// ===========================================================================
+// Board
+// ===========================================================================
+.board {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+.row {
+  display: grid;
+  grid-template-columns: 1.25rem 1fr auto;
+  align-items: center;
+  gap: var(--spacing);
+  background: oklch(var(--800) / 0.6);
+  border: var(--border-width-sm) solid oklch(var(--700) / 0.6);
+  border-radius: var(--border-radius);
+  padding: var(--padding-sm) var(--padding);
+}
+.row.current {
+  border-color: oklch(var(--500));
+  background: oklch(var(--800) / 0.85);
+}
+.row.empty {
+  opacity: 0.35;
+}
+.rownum {
+  font-size: var(--text-sm);
+  color: oklch(var(--100) / 0.5);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.row .pegs {
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--spacing-sm);
+  justify-content: start;
+}
+.row.current .rownum {
+  color: oklch(var(--500));
+}
+.row .hint {
+  font-size: var(--text-xs);
+  color: oklch(var(--500));
+  text-align: right;
+  letter-spacing: 0.04em;
+}
+
+// feedback dots: only filled + outline are rendered (no empty dots)
+.fb {
+  display: grid;
+  grid-template-columns: repeat(2, 10px);
+  gap: 4px;
+  align-content: center;
+}
+.fb i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.fb i.exact {
+  background: var(--fg-body);
+}
+.fb i.colour {
+  background: transparent;
+  border: 2px solid oklch(var(--500));
+}
+
+// palette tray
+.tray .pegs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(2.5rem, 1fr));
+  gap: var(--spacing);
+  justify-items: center;
+}
+.tray-actions {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing);
+}
+
+// ===========================================================================
+// Settings
+// ===========================================================================
+.set-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--spacing);
+  padding: var(--padding-sm) 0;
+
+  & + .set-row {
+    border-top: var(--border-width-sm) solid oklch(var(--700) / 0.5);
+  }
+}
+.set-row .lab {
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+.set-row .desc {
+  font-size: var(--text-xs);
+  color: oklch(var(--100) / 0.5);
+  margin-top: 2px;
+}
+.mini-palette {
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+  justify-content: start;
+}
+.stepper {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+.stepper .val {
+  min-width: 1.75rem;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.step-btn {
+  width: 2.25rem;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0;
+  font-size: var(--text-xl);
+}
+.toggle {
+  width: 3.1rem;
+  height: 1.75rem;
+  border-radius: var(--border-radius);
+  background: oklch(var(--500));
+  position: relative;
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+  border: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    right: 3px;
+    width: 1.35rem;
+    border-radius: 2px;
+    background: var(--color100);
+  }
+  &.off {
+    background: oklch(var(--800));
+  }
+  &.off::after {
+    right: auto;
+    left: 3px;
+    background: oklch(var(--100) / 0.5);
+  }
+  &:focus-visible {
+    outline: var(--border-width) solid oklch(var(--500));
+    outline-offset: 2px;
+  }
+}
+.reset-note {
+  font-size: var(--text-xs);
+  color: oklch(var(--100) / 0.45);
+  text-align: center;
+  line-height: 1.4;
+}
+
+// ===========================================================================
+// End screen (win / lose)
+// ===========================================================================
+.end-hero {
+  display: grid;
+  justify-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing) 0;
+}
+.end-glyph {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+.end-title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+.end-title.win {
+  color: oklch(0.84 0.17 150);
+}
+.end-title.lose {
+  color: oklch(0.65 0.18 29);
+}
+.end-sub {
+  color: oklch(var(--100) / 0.75);
+  font-size: var(--text-base);
+  text-align: center;
+  line-height: 1.5;
+}
+.reveal {
+  display: grid;
+  gap: var(--spacing);
+  justify-items: center;
+}
+.reveal .cap {
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: oklch(var(--100) / 0.5);
+}
+.reveal .pegs {
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--spacing);
+}
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing);
+  width: 100%;
+}
+.stat {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+.stat .big {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.stat .lbl {
+  font-size: var(--text-xs);
+  color: oklch(var(--100) / 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+// ===========================================================================
+// How-to dialog
+// ===========================================================================
+.howto {
+  border: none;
+  padding: var(--padding);
+  background: transparent;
+  max-width: min(28rem, calc(100% - 2 * var(--spacing)));
+  width: 100%;
+  color: var(--fg-body);
+
+  &::backdrop {
+    background: rgb(0 0 0 / 0.6);
+    backdrop-filter: blur(2px);
+  }
+}
+.legend {
+  display: grid;
+  gap: var(--spacing);
+}
+.legend .li {
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: var(--spacing);
+  align-items: center;
+  font-size: var(--text-sm);
+  color: oklch(var(--100) / 0.85);
+}
+.legend .li b {
+  color: var(--fg-body);
+}
+.note {
+  font-size: var(--text-sm);
+  color: oklch(var(--100) / 0.55);
+  line-height: 1.5;
+}
+.annot {
+  font-size: var(--text-xs);
+  color: oklch(var(--500));
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+.hero-pegs {
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--spacing);
+  justify-content: center;
+}
+.tagline {
+  color: oklch(var(--100) / 0.75);
+  font-size: var(--text-base);
+  text-align: center;
+  line-height: 1.5;
+}

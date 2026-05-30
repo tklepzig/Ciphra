@@ -1,0 +1,37 @@
+{
+  "name": "Farbcode",
+  "short_name": "Farbcode",
+  "description": "Knacke den geheimen Farbcode — ein Code-Knack-Spiel für einen Spieler, voll offline.",
+  "lang": "de",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#23400f",
+  "background_color": "#0d1606",
+  "icons": [
+    {
+      "src": "assets/logo-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/logo-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/logo-192-maskable.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/logo-512-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ]
+}
