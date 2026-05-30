@@ -1,8 +1,4 @@
-# Farbcode
-
-> **Working title.** "Farbcode" is a placeholder name — rename in `index.html`
-> (`<title>` + the `.wordmark`) and `manifest.webmanifest` once a final name is
-> picked.
+# Ciphra
 
 An offline, single-player code-breaking game (German UI) — guess the hidden
 colour code in a limited number of tries. Installable PWA, no backend, no
