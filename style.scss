@@ -14,6 +14,12 @@
   src: url("./assets/fonts/open-sans-latin.woff2") format("woff2");
 }
 
+// The HTML `hidden` attribute must beat component display rules (e.g. `.command`
+// and `.stat-row` set `display`, which would otherwise override `[hidden]`).
+[hidden] {
+  display: none !important;
+}
+
 // ===========================================================================
 // App shell — single column, centred on desktop, one screen visible at a time
 // ===========================================================================
@@ -135,15 +141,6 @@
   font-size: var(--text-xl);
   letter-spacing: 0.18em;
 }
-.placeholder-chip {
-  font-size: var(--text-xs);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: oklch(var(--100) / 0.45);
-  border: 1px solid oklch(var(--700));
-  padding: 1px 6px;
-}
-
 // stacked full-width CTAs
 .cta {
   width: 100%;
