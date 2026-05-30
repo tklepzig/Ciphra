@@ -1,5 +1,5 @@
 {
-  "name": "mastermind-app",
+  "name": "ciphra",
   "version": "0.1.0",
   "type": "module",
   "description": "Offline single-player code-breaking game (German UI). PWA built on the Ada framework.",

@@ -19,8 +19,8 @@ import {
   deserializeGame,
 } from "./storage.js";
 
-const CONFIG_KEY = "mm.config";
-const GAME_KEY = "mm.game";
+const CONFIG_KEY = "ciphra.config";
+const GAME_KEY = "ciphra.game";
 
 // ---------------------------------------------------------------------------
 // Persistence

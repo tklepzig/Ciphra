@@ -1,7 +1,7 @@
 // Service worker for offline support. Pre-caches the app shell on install,
 // serves cache-first thereafter. CI replaces __BUILD_ID__ with the commit SHA
 // so each deploy gets a fresh cache name; the literal name is stable locally.
-var CACHE_NAME = "mastermind-cache-__BUILD_ID__";
+var CACHE_NAME = "ciphra-cache-__BUILD_ID__";
 
 // App shell + assets. Relative paths resolve against the SW location, so they
 // work on a GitHub Pages subpath too. The compiled JS (tsc) and CSS (sass) are
