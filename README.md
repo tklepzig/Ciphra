@@ -1,6 +1,6 @@
 # Ciphra
 
-An offline, single-player code-breaking game (German UI) — guess the hidden
+An offline, single-player code-breaking game — guess the hidden
 colour code in a limited number of tries. Installable PWA, no backend, no
 network calls, no analytics.
 
